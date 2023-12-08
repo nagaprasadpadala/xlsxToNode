@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload</title>
+</head>
+<body>
+  <form enctype="multipart/form-data" action="/upload" method="post">
+    <input type="file" name="file" id="fileInput" />
+  </form>
+
+  <script>
+   document.getElementById('fileInput').addEventListener('change', function () {
+  const formData = new FormData();
+  formData.append('file', this.files[0]);
+
+  fetch('http://localhost:3002/upload', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `/download/${data.fileName}`;
+    downloadLink.download = 'result.xlsx';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+  </script>
+</body>
+</html>
